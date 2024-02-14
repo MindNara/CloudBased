@@ -10,7 +10,7 @@
 
 ### 1. Clone this Repository
   
-    git clone https://github.com/MindNara/DevTool.git
+    git clone https://github.com/MindNara/CloudBased.git
 
 ### 2. Install dependencies
 
@@ -19,7 +19,14 @@
     npm install
    
 ### 3. Run Dev Server
+ **Frontend**
 
     yarn dev
     # or
     npm run dev
+ 
+ **Backend**
+ 
+
+    npx nodemon index.js
+
