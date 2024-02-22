@@ -2,7 +2,8 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 
-import user from './routes/users.js'
+import user from './routes/users/users.js'
+import post from './routes/posts/posts.js'
 
 dotenv.config()
 
@@ -14,7 +15,8 @@ app.get("/", (req, res) => {
     res.json({ "Hi": "Hello World" })
 })
 
-app.use('/api', user)
+app.use(user)
+app.use(post)
 
 const PORT = 3000
 

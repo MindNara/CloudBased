@@ -1,10 +1,10 @@
 import express from 'express'
-import { readAllUsers } from './db/db.users.js'
+import { readAllUsers } from './db.users.js'
 
 const router = express.Router()
 
 // READ ALL Users
-router.get('/users', async (req, res) => {
+router.get('/user', async (req, res) => {
     const { success, data } = await readAllUsers()
 
     if (success) {

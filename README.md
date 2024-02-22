@@ -28,5 +28,5 @@
  **Backend**
  
 
-    npx nodemon index.js
+    npx nodemon server.js
 
