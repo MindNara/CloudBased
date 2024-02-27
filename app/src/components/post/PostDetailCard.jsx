@@ -8,58 +8,6 @@ import CommentInput from "./CommentInput";
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 
-
-// const DetailCard = [
-//   {
-//     titlename: "Admission dek63",
-//     name: "Punimmiki",
-//     date: "21/12/2023",
-//     time: "08.20",
-//     message:
-//       "คณะเทคโนโลยีสารสนเทศ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง เปิดรับสมัครเข้าศึกษาต่อระดับปริญญาตรี ประจำปีการศึกษา 2563 TCAS 63 รอบที่ 4 (Admission) 2 หลักสูตร 1) เทคโนโลยีสารสนเทศ (Information Technology : IT) รับจำนวน 15 คน 2) ข้อมูลและการวิเคราะห์เชิงธุรกิจ (Data Science and Business Analytics : DSBA) รับจำนวน 6 คน ยกเลิกการสอบสัมภาษณ์ เนื่องจากสถานการณ์เชื้อ COVID -19 ระบาด",
-//     image: [
-//       "https://www.it.kmitl.ac.th/wp-content/uploads/2020/05/1300x867pix-%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3-TCAS63-4-Admission.jpg",
-//       "https://osda.kmitl.ac.th/storage/cover_image/qecgcbzJO7u35tV60AAcF5ihBI3M2n8wIJcVVlcb.jpeg", "https://www.aad.kmitl.ac.th/wp-content/uploads/2021/12/20211203-913x547.jpg",
-//       "https://www.aad.kmitl.ac.th/wp-content/uploads/2019/02/%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%AA%E0%B8%A1%E0%B8%B1%E0%B8%84%E0%B8%A3-%E0%B9%82%E0%B8%97-%E0%B9%80%E0%B8%AD%E0%B8%81.jpg",
-//     ],
-//     like: 145,
-//     comment: 76,
-//   },
-//   {
-//     titlename: "ชำระค่าเทอม",
-//     name: "Punimmiki",
-//     date: "21/12/2023",
-//     time: "06.30",
-//     message:
-//       "ขั้นตอนการพิมพ์ใบชำระค่าธรรมเนียมการศึกษา นักศึกษาทุกชั้นปี (ป.ตรี/โท/เอก) สามารถพิมพ์ใบแจ้งชําระเงินจากระบบ แล้วนําไปยื่นชําระเงินผ่านเคาท์เตอร์ธนาคาร (หรือในนักศึกษาระดับป.ตรี สแกนบาร์โค้ดผ่านแอพธนาคาร) โดยไม่มีค่าปรับชำระเงินล่าช้า จนถึงวันศุกร์ที่ 7 พฤษภาคม 2564",
-//     image: ["https://engineer.kmitl.ac.th/wp-content/uploads/2021/08/4-4.jpg"],
-//     like: 235,
-//     comment: 91,
-//   },
-//   {
-//     titlename: "ประกาศปิดวันหยุด",
-//     name: "Punimmiki",
-//     date: "28/12/2023",
-//     time: "18.12",
-//     message:
-//       "ขั้นตอนการพิมพ์ใบชำระค่าธรรมเนียมการศึกษา นักศึกษาทุกชั้นปี (ป.ตรี/โท/เอก) สามารถพิมพ์ใบแจ้งชําระเงินจากระบบ แล้วนําไปยื่นชําระเงินผ่านเคาท์เตอร์ธนาคาร (หรือในนักศึกษาระดับป.ตรี สแกนบาร์โค้ดผ่านแอพธนาคาร) โดยไม่มีค่าปรับชำระเงินล่าช้า จนถึงวันศุกร์ที่ 7 พฤษภาคม 2564",
-//     image: [],
-//     like: 57,
-//     comment: 2,
-//   },
-//   {
-//     titlename: "สอบกลางภาค",
-//     name: "Punimmiki",
-//     date: "19/12/2023",
-//     time: "12.12",
-//     message:
-//       "สอบปลายภาคเป็นการสรุปว่าคุณเรียนตลอดทั้งปีได้อะไรบ้าง สอบกลางภาคบทเรียนที่คุณเรียนไปแล้วกลางเทอมว่าได้ความรู้",
-//     image: [],
-//     like: 57,
-//     comment: 2,
-//   },
-// ];
-
 const PostDetailCard = () => {
   const [likedPosts, setLikedPosts] = useState([]);
   const [showFullScreen, setShowFullScreen] = useState(false);
@@ -68,18 +16,13 @@ const PostDetailCard = () => {
   const [showComments, setShowComments] = useState([]);
   const [postDetail, setPostDetail] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/post');
-        setPostDetail(response.data.data);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchData();
-  }, []);
+  useEffect(()=>{
+    axios.get("http://localhost:3000/post")
+      .then((res) => {
+        setPostDetail(res.data.data);
+      })
+      .catch((err) => console.log(err.message))
+  }, [])
   // console.log(postDetail)
 
   const handleLikeClick = (index) => {
@@ -127,7 +70,7 @@ const PostDetailCard = () => {
             <div className="flex-shrink-0 border-[1px] border-solid border-gray-300 rounded-[30px] p-6 bg-white">
               <div className="text-[#151C38] text-2xl font-[500] leading-normal flex justify-between">
                 <span>{post.title.S}</span>
-                <DropdownDots />
+                <DropdownDots postId={post.id.S} />
               </div>
 
               <div className="mt-5 flex items-start">
