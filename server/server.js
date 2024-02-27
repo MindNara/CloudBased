@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import user from './routes/users/users.js'
 import post from './routes/posts/posts.js'
+import review from './routes/reviews/reviews.js'
 
 dotenv.config()
 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 
 app.use(user)
 app.use(post)
+app.use(review)
 
 const PORT = 3000
 
