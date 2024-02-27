@@ -1,11 +1,13 @@
 // DropdownDots.js
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import PopUpEdit from "./PopUpEdit"; // นำเข้า Component PopUpEdit
+import PopUpEdit from "./PopUpEdit";
+import axios from 'axios';
 
-const DropdownDots = () => {
+const DropdownDots = ({ postId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // console.log(postId);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -26,6 +28,15 @@ const DropdownDots = () => {
     // ปิด Pop-up เมื่อ Post เสร็จสิ้น
     closePopup();
   };
+
+  function deletePost(id) {
+    console.log("Delete Post: " + id);
+    axios.delete(`http://localhost:3000/post/${id}`)
+      .then(res => {
+        window.location.reload();
+      })
+      .catch((err) => console.log(err.message))
+  }
 
   return (
     <div className="relative">
@@ -67,7 +78,7 @@ const DropdownDots = () => {
                 <a
                   href="#"
                   className="block px-2 py-2 dark:text-gray-500 font-normal"
-                  onClick={togglePopup} // เมื่อคลิก Edit Post เปิด Pop-up
+                  onClick={togglePopup}
                 >
                   Edit Post
                 </a>
@@ -84,6 +95,7 @@ const DropdownDots = () => {
                 <a
                   href="#"
                   className="block px-2 py-2 dark:text-gray-500 font-normal"
+                  onClick={() => deletePost(postId)}
                 >
                   Delete Post
                 </a>
