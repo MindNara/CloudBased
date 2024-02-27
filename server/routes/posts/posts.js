@@ -2,6 +2,8 @@ import express from 'express';
 import { readAllPosts, createPosts, updatePosts, deletePosts } from './db.posts.js';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
+import { s3 } from '../../s3.config.js';
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
 
@@ -23,20 +25,32 @@ router.post('/post', upload.array('image'), async (req, res) => {
 
     try {
         const { title, detail } = req.body;
-        const images = req.files.map(file => ({
-            fieldname: file.fieldname,
-            originalname: file.originalname,
-            encoding: file.encoding,
-            mimetype: file.mimetype,
-            buffer: file.buffer,
-        }));
+        const images = req.files;
+
+        const imageUploadPromises = images.map(async (file) => {
+            const params = {
+                Bucket: 'file-upload-cloud-project',
+                Key: file.originalname,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            };
+
+            const command = new PutObjectCommand(params);
+            await s3.send(command);
+
+            const imageUrl = `https://file-upload-cloud-project.s3.amazonaws.com/${encodeURIComponent(file.originalname)}`;
+            return imageUrl;
+        });
+        const imageUrls = await Promise.all(imageUploadPromises);
 
         const newPost = {
             id: uuidv4(),
             title,
             detail,
-            image: images.map(image => image.originalname),
+            image: imageUrls,
             timestamp: new Date().toISOString(),
+            like: 0,
+            comment: 0,
         };
 
         const result = await createPosts(newPost);

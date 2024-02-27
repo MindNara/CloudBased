@@ -25,6 +25,8 @@ const createPosts = async (post) => {
                 detail: { S: post.detail },
                 images: { SS: post.image },
                 timestamp: { S: post.timestamp },
+                like: { N: post.like.toString() },
+                comment: { N: post.comment.toString() },
             },
         };
 
