@@ -13,6 +13,19 @@ function SideNavBar({ toggle, isOpen, setIsOpen }) {
         localStorage.setItem('isOpen', isOpen);
     }, [isOpen]);
 
+    const handleLogout = async (e) => {
+        e.preventDefault();
+
+        try {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            navigate('/');
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+
+    }
+
     return (
         <div className='fixed h-screen p-2'>
             <div className={`sidebar ${isOpen ? '' : 'active'} max-2xl:w-[240px] bg-[#181754] h-full rounded-[30px] text-white py-10 max-2xl:py-8 flex flex-col justify-between`}>
@@ -52,7 +65,7 @@ function SideNavBar({ toggle, isOpen, setIsOpen }) {
                         <div className='bg-white w-12 max-2xl:w-9 h-12 max-2xl:h-9 rounded-[50px]'></div>
                         <span className='username text-[18px] max-2xl:text-[14px] font-light'>Username</span>
                     </div>
-                    <Button onClick={() => { }}>
+                    <Button onClick={handleLogout}>
                         <img className='max-2xl:w-5' width='24' height='24' src="https://img.icons8.com/ios-filled/FFFFFF/logout-rounded.png" alt="logout-rounded" />
                     </Button>
                 </div>

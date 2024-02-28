@@ -27,6 +27,7 @@ const createPosts = async (post) => {
                 timestamp: { S: post.timestamp },
                 like: { N: post.like.toString() },
                 comment: { N: post.comment.toString() },
+                userId: { S: post.userId },
             },
         };
 

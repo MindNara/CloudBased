@@ -10,7 +10,8 @@ const createUsers = async (user) => {
                 id: { S: user.id },
                 email: { S: user.email },
                 password: { S: user.password },
-                createdAt: { S: user.createdAt }
+                createdAt: { S: user.createdAt },
+                role: { S: user.role }
             }
         }
 

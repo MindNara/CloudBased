@@ -21,7 +21,8 @@ router.post('/register', async (req, res) => {
             id: uuidv4(),
             email,
             password: hashedPassword,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            role: 'student'
         };
 
         const result = await createUsers(user);
@@ -72,7 +73,11 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({
             accessToken: token,
-            user: result.Item,
+            user: {
+                userId: result.Item.id.S,
+                role: result.Item.role.S,
+            },
+            role: result.Item.role.S,
             message: "Logged in successfully",
             success: true
         });

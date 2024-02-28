@@ -24,13 +24,13 @@ const upload = multer({ storage: storage });
 router.post('/post', upload.array('image'), async (req, res) => {
 
     try {
-        const { title, detail } = req.body;
+        const { title, detail, userId } = req.body;
         const images = req.files;
 
         const imageUploadPromises = images.map(async (file) => {
             const params = {
                 Bucket: 'file-upload-cloud-project',
-                Key: file.originalname,
+                Key: `${userId}_${file.originalname}`,
                 Body: file.buffer,
                 ContentType: file.mimetype,
             };
@@ -51,6 +51,7 @@ router.post('/post', upload.array('image'), async (req, res) => {
             timestamp: new Date().toISOString(),
             like: 0,
             comment: 0,
+            userId
         };
 
         const result = await createPosts(newPost);

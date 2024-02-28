@@ -63,10 +63,10 @@ const PostDetailCard = () => {
 
 
   return (
-    <div className="mt-5">
+    <div className="">
       {postDetail &&
         postDetail.map((post, index) => (
-          <div key={index} className="mt-4">
+          <div key={index} className="mb-4">
             <div className="flex-shrink-0 border-[1px] border-solid border-gray-300 rounded-[30px] p-6 bg-white">
               <div className="text-[#151C38] text-2xl font-[500] leading-normal flex justify-between">
                 <span>{post.title.S}</span>

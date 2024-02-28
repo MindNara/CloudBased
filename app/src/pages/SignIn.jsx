@@ -18,11 +18,12 @@ function SignIn() {
 
         try {
             const response = await axios.post('http://localhost:3000/login', { email, password });
-            console.log(response.data);
+            // console.log(response.data);
 
             if (response.data.success) {
-                const { accessToken, user, message } = response.data;
+                const { accessToken, user } = response.data;
                 localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('user', JSON.stringify(user));
                 navigate('/dashboard');
             } else {
                 console.error('Authentication failed:', response.data.error);

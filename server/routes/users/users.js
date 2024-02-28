@@ -13,4 +13,15 @@ router.get('/user', async (req, res) => {
     return res.status(500).json({ success: false, messsage: "Error" })
 })
 
+// GET User by ID
+router.get('/user/:userId', async (req, res) => {
+
+    const postId = req.params.postId;
+
+    // if (success) {
+    //     return res.json({ success, data })
+    // }
+    // return res.status(500).json({ success: false, messsage: "Error" })
+})
+
 export default router
