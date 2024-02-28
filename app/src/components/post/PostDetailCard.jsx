@@ -16,14 +16,14 @@ const PostDetailCard = () => {
   const [showComments, setShowComments] = useState([]);
   const [postDetail, setPostDetail] = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     axios.get("http://localhost:3000/post")
       .then((res) => {
         setPostDetail(res.data.data);
       })
       .catch((err) => console.log(err.message))
   }, [])
-  // console.log(postDetail)
+  // console.log(postDetail[1].images.L.slice(0, 4))
 
   const handleLikeClick = (index) => {
     if (likedPosts.includes(index)) {
@@ -88,31 +88,31 @@ const PostDetailCard = () => {
               <div className="mt-5">
                 <p className="text-black text-l font-light">{post.detail.S}</p>
 
-                {post.images.SS.length === 1 ? (
+                {post.images.L.length === 1 ? (
 
-                  post.images.SS.map((imageUrl, imageIndex) => (
+                  post.images.L.map((imageUrl, imageIndex) => (
                     <img
                       key={imageIndex}
-                      src={imageUrl}
+                      src={imageUrl.M.url.S}
                       className="object-cover w-full rounded-lg cursor-pointer"
                       alt={`post-${imageIndex}`}
-                      onClick={() => handleImageClick(imageUrl, index)}
+                      onClick={() => handleImageClick(imageUrl.M.url.S, index)}
                     />
                   ))
 
                 ) : (
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    {post.images.SS.slice(0, 4).map((item, i) => (
+                    {post.images.L.slice(0, 4).map((item, i) => (
                       <div key={i}>
                         <img
-                          src={item}
+                          src={item.M.url.S}
                           className="object-cover w-full h-44 rounded-lg cursor-pointer"
                           alt={`post-${index}-${i}`}
-                          onClick={() => handleImageClick(item, index)}
+                          onClick={() => handleImageClick(item.M.url.S, index)}
                         />
                       </div>
                     ))}
-                    {/* {post.images.SS.length > 4 && (
+                    {/* {post.images.L.length > 4 && (
                       <div
                         className="object-cover w-full h-44 rounded-lg cursor-pointer"
                         onClick={() => handleImageClick(post.image[4], index)}

@@ -1,5 +1,5 @@
 import { db } from '../../config/db.config.js';
-import { ScanCommand, PutItemCommand, UpdateItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
+import { ScanCommand, PutItemCommand, UpdateItemCommand, DeleteItemCommand, GetItemCommand } from '@aws-sdk/client-dynamodb';
 
 // Read all posts
 const readAllPosts = async () => {
@@ -14,6 +14,25 @@ const readAllPosts = async () => {
     }
 };
 
+// Get post by ID
+const getPostById = async (postId) => {
+    try {
+        const params = {
+            TableName: 'posts',
+            Key: {
+                id: { S: postId }
+            }
+        };
+
+        const command = new GetItemCommand(params);
+        const result = await db.send(command);
+        return { success: true, data: result.Item };
+
+    } catch (error) {
+
+    }
+}
+
 // Create posts
 const createPosts = async (post) => {
     try {
@@ -23,7 +42,14 @@ const createPosts = async (post) => {
                 id: { S: post.id },
                 title: { S: post.title },
                 detail: { S: post.detail },
-                images: { SS: post.image },
+                images: {
+                    L: post.image.map(image => ({
+                        M: {
+                            url: { S: image.url },
+                            name: { S: image.name }
+                        }
+                    }))
+                },
                 timestamp: { S: post.timestamp },
                 like: { N: post.like.toString() },
                 comment: { N: post.comment.toString() },
@@ -48,16 +74,18 @@ const updatePosts = async (post) => {
             Key: {
                 id: { S: post.id },
             },
-            UpdateExpression: 'SET #title = :title, #detail = :detail, #timestamp = :timestamp',
+            UpdateExpression: 'SET #title = :title, #detail = :detail, #timestamp = :timestamp, #images = :images',
             ExpressionAttributeNames: {
                 '#title': 'title',
                 '#detail': 'detail',
                 '#timestamp': 'timestamp',
+                '#images': 'images',
             },
             ExpressionAttributeValues: {
                 ':title': { S: post.title },
                 ':detail': { S: post.detail },
                 ':timestamp': { S: post.timestamp },
+                ':images': { L: post.image.map(img => ({ M: { url: { S: img.url }, name: { S: img.name } } })) },
             },
             ReturnValues: 'UPDATED_NEW',
         };
@@ -98,5 +126,6 @@ export {
     readAllPosts,
     createPosts,
     updatePosts,
-    deletePosts
+    deletePosts,
+    getPostById
 }

@@ -105,7 +105,7 @@ const DropdownDots = ({ postId }) => {
         </div>
       )}
 
-      {isPopupOpen && <PopUpEdit handleClose={closePopup} togglePopup={togglePopup} handlePost={handlePost} />}
+      {isPopupOpen && <PopUpEdit postId={postId} handleClose={closePopup} togglePopup={togglePopup} handlePost={handlePost} />}
     </div>
   );
 };

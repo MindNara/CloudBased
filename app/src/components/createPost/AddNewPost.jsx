@@ -19,7 +19,7 @@ const AddNewPost = ({ userId }) => {
     setSelectedFiles(updatedFiles);
   };
 
-  const handleModalToggle = ({ userId }) => {
+  const handleModalToggle = () => {
     setModalVisible(!modalVisible);
     setSelectedFiles([]);
   };
@@ -34,7 +34,6 @@ const AddNewPost = ({ userId }) => {
     selectedFiles.forEach((file) => {
       formData.append('image', file);
     });
-    console.log(formData);
 
     try {
       const response = await axios.post('http://localhost:3000/post', formData, {
