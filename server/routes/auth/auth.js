@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { createUsers } from './db.auth.js';
-import { db } from '../../db.config.js';
+import { db } from '../../config/db.config.js';
 import 'dotenv/config';
 import { GetItemCommand } from '@aws-sdk/client-dynamodb';
 
@@ -20,7 +20,8 @@ router.post('/register', async (req, res) => {
         const user = {
             id: uuidv4(),
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            createdAt: new Date().toISOString()
         };
 
         const result = await createUsers(user);
@@ -54,24 +55,47 @@ router.post('/login', async (req, res) => {
 
         const result = await db.send(command);
         if (!result.Item) {
+            console.log({ error: 'Authentication failed: result.Item' })
             return res.status(401).json({ error: 'Authentication failed' });
         }
 
         const checkPassword = await bcrypt.compare(password, result.Item.password.S);
         if (!checkPassword) {
+            console.log({ error: 'Authentication failed: checkPassword' })
             return res.status(401).json({ error: 'Authentication failed' });
         }
 
         // Generate token
-        const token = jwt.sign({ id: result.Item.id }, 'your-secret-key', {
+        const token = jwt.sign({ id: result.Item.id.S }, 'your-secret-key', {
             expiresIn: '1h',
         });
 
-        res.status(200).json({ token, user: result.Item });
+        res.status(200).json({
+            accessToken: token,
+            user: result.Item,
+            message: "Logged in successfully",
+            success: true
+        });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+})
+
+router.post('/authen', async (req, res) => {
+
+    try {
+
+        const token = req.headers.authorization.split(' ')[1];
+        if (!token) return res.status(401).json({ error: 'Access denied' });
+
+        const decoded = jwt.verify(token, 'your-secret-key');
+        res.json({ status: true, decoded });
+
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
     }
 
 })

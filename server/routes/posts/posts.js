@@ -2,14 +2,13 @@ import express from 'express';
 import { readAllPosts, createPosts, updatePosts, deletePosts } from './db.posts.js';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
-import { s3 } from '../../s3.config.js';
+import { s3 } from '../../config/s3.config.js';
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { verifyToken } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // READ ALL Posts
-router.get('/post', verifyToken, async (req, res) => {
+router.get('/post', async (req, res) => {
     const { success, data } = await readAllPosts();
 
     if (success) {
@@ -22,7 +21,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // CREATE Posts
-router.post('/post', verifyToken, upload.array('image'), async (req, res) => {
+router.post('/post', upload.array('image'), async (req, res) => {
 
     try {
         const { title, detail } = req.body;
@@ -69,7 +68,7 @@ router.post('/post', verifyToken, upload.array('image'), async (req, res) => {
 })
 
 // UPDATE Posts by ID
-router.put('/post/:postId', verifyToken, async (req, res) => {
+router.put('/post/:postId', async (req, res) => {
 
     const postId = req.params.postId;
     const { title, detail } = req.body;
@@ -97,7 +96,7 @@ router.put('/post/:postId', verifyToken, async (req, res) => {
 })
 
 // DELETE Posts by ID
-router.delete('/post/:postId', verifyToken, async (req, res) => {
+router.delete('/post/:postId', async (req, res) => {
 
     const postId = req.params.postId;
 

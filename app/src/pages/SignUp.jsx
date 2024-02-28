@@ -3,26 +3,27 @@ import SignUpBG from '../assets/SignUpBG.png'
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Logo from '../assets/Logo.png'
 import SignUpImage from '../assets/SignUpImage.png'
+import axios from 'axios';
 
 function SignUp() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     //signup
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+
         try {
-            await createUser(email, password);
-            navigate('/signin')
-        } catch (e) {
-            setError(e.message);
-            console.log(e.message);
+            const response = await axios.post('http://localhost:3000/register', { email, password });
+            if (response.data.success) {
+                navigate('/signin');
+            }
+        } catch (error) {
+            console.error('Error during signup:', error.response.data);
         }
     };
-    //
+
     return (
         <div style={{ backgroundImage: `url(${SignUpBG})` }}
             className='bg-no-repeat bg-cover bg-center h-screen px-40 py-16 bg-[#181754] text-white'

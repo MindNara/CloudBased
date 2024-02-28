@@ -1,4 +1,4 @@
-import { db } from '../../db.config.js'
+import { db } from '../../config/db.config.js'
 import { ScanCommand, GetItemCommand } from '@aws-sdk/client-dynamodb';
 
 // Read all Subject

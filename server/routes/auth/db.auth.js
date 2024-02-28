@@ -1,4 +1,4 @@
-import { db } from '../../db.config.js';
+import { db } from '../../config/db.config.js';
 import { ScanCommand, PutItemCommand, UpdateItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
 
 // Create users
@@ -10,6 +10,7 @@ const createUsers = async (user) => {
                 id: { S: user.id },
                 email: { S: user.email },
                 password: { S: user.password },
+                createdAt: { S: user.createdAt }
             }
         }
 

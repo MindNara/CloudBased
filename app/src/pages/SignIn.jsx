@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import Logo from '../assets/Logo.png'
 import SignInImage from '../assets/SignInImage.png'
 import { Button } from '@material-tailwind/react';
+import axios from 'axios';
 
 function SignIn() {
 
@@ -11,6 +12,26 @@ function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://localhost:3000/login', { email, password });
+            console.log(response.data);
+
+            if (response.data.success) {
+                const { accessToken, user, message } = response.data;
+                localStorage.setItem('accessToken', accessToken);
+                navigate('/dashboard');
+            } else {
+                console.error('Authentication failed:', response.data.error);
+            }
+
+        } catch (error) {
+            console.error('Error during signup:', error.response.data);
+        }
+    };
 
     return (
         <div style={{ backgroundImage: `url(${SignInBG})` }}
@@ -21,10 +42,10 @@ function SignIn() {
                     <Link to='/'><img src={Logo} alt="Logo" className='w-28' /></Link>
                     <h1 className='font-bold text-[50px] tracking-[2px] mt-4'>LOGIN</h1>
                     <p className='font-light text-[30px] tracking-[2px] mt-4'>Login to continues</p>
-                    <form onSubmit={() => { }} className='flex flex-col gap-6 mt-6'>
+                    <form onSubmit={handleSubmit} className='flex flex-col gap-6 mt-6'>
                         <div className='input-box'>
                             <img width="35" height="35" src='https://img.icons8.com/fluency-systems-regular/48/151c38/new-post.png' className='icon mt-3 ml-6'></img>
-                            <input type='email' name='email' placeholder='Email' className='w-[600px] h-[60px] font-light' onChange={(e) => setEmail(e.target.value)}></input>
+                            <input type='text' name='email' placeholder='Email' className='w-[600px] h-[60px] font-light' onChange={(e) => setEmail(e.target.value)}></input>
                         </div>
                         <div className='input-box'>
                             <img width="35" height="35" src='https://img.icons8.com/fluency-systems-regular/48/151c38/password--v1.png' className='icon mt-3 ml-6'></img>
