@@ -6,6 +6,7 @@ import cors from 'cors';
 import user from './routes/users/users.js'
 import post from './routes/posts/posts.js'
 import review from './routes/reviews/reviews.js'
+import auth from './routes/auth/auth.js'
 
 dotenv.config()
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 app.use(user)
 app.use(post)
 app.use(review)
+app.use(auth)
 
 const PORT = 3000
 
