@@ -1,9 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CardSubject from '../components/cardReview/CardSubject'
-import { SubjectDetail } from '../dummyData/SubjectDetail';
+// import { SubjectDetail } from '../dummyData/SubjectDetail';
+// import { format, parseISO } from 'date-fns';
+import axios from 'axios';
 
 function Review() {
   const [textSearch, setTextSearch] = useState('');
+  const [subjects, setSubjects] = useState([]);
+  useEffect(() => {
+    const fetchDataSubject = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/course');
+        setSubjects(response.data.data);
+        console.log(response.data.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchDataSubject();
+  }, []);
+
   return (
     <>
       <div className='w-full h-auto flex'>
@@ -32,7 +49,9 @@ function Review() {
               <img width="20" height="20" src='https://img.icons8.com/material-rounded/24/737373/delete-sign.png' className='icon top-3 ml-4'></img>
             </button>
           </div>
-          <CardSubject item={SubjectDetail} />
+          {subjects && (
+            <CardSubject item={subjects} />
+          )}
         </div>
       </div>
     </>
