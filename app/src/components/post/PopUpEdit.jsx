@@ -51,12 +51,13 @@ const PopUpEdit = ({ postId, handleClose, togglePopup, handlePost }) => {
     formData.append('userId', user.userId);
 
     selectedFiles.forEach(file => {
-      const originalName = file.M && file.M.name && file.M.name.S;
-      const fileData = {
-        ...file.M,
-        name: originalName,
-      };
-      formData.append('image', new Blob([JSON.stringify(fileData)], { type: 'application/json' }), originalName);
+      if (file.name) {
+        console.log(file)
+        formData.append('image', file);
+      } else {
+        formData.append('oldImage', JSON.stringify(file.M));
+        console.log(JSON.stringify(file.M))
+      }
     });
 
     try {
@@ -139,7 +140,7 @@ const PopUpEdit = ({ postId, handleClose, togglePopup, handlePost }) => {
                       placeholder="New Title"
                       className="border-none outline-none p-2  w-full focus:ring-0 text-xl font-semibold"
                       onChange={(e) => setTitle(e.target.value)}
-                      value={postDetail.title.S}
+                      value={title}
                     />
                     <textarea
                       rows="4"
@@ -147,7 +148,7 @@ const PopUpEdit = ({ postId, handleClose, togglePopup, handlePost }) => {
                       placeholder="Text to something ..."
                       className="border-none outline-none p-2 mb-4 w-full resize-none focus:ring-0 text-base font-normal"
                       onChange={(e) => setDetail(e.target.value)}
-                      value={postDetail.detail.S}
+                      value={detail}
                     />
                   </div>
 
@@ -176,34 +177,65 @@ const PopUpEdit = ({ postId, handleClose, togglePopup, handlePost }) => {
                   <div className="flex px-4 md:px-5 rounded-b mt-[-20px] mb-4">
                     <ul className="file-list">
                       {selectedFiles.map((file, index) => (
-                        <li
-                          key={index}
-                          className="px-3 py-[5px] rounded-lg bg-gray-100 my-3 text-[14px]"
-                        >
-                          <span className="bg-gray-200 px-[6px] rounded-xl mr-2 text-[12px] font-light">{index + 1}</span>
-                          {/* <span className="mr-2">{file.M.name.S}</span> */}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveFile(index)}
-                            className="text-gray-400 bg-transparent rounded-lg text-sm w-4 h-4 ms-auto inline-flex justify-center items-center hover:bg-gray-300 hover:text-white"
+                        file.M ? (
+                          <li
+                            key={index}
+                            className="px-3 py-[5px] rounded-lg bg-gray-100 my-3 text-[14px]"
                           >
-                            <svg
-                              className="w-2 h-2"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 14 14"
+                            <span className="bg-gray-200 px-[6px] rounded-xl mr-2 text-[12px] font-light">{index + 1}</span>
+                            <span className="mr-2">{file.M.name.S}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFile(index)}
+                              className="text-gray-400 bg-transparent rounded-lg text-sm w-4 h-4 ms-auto inline-flex justify-center items-center hover:bg-gray-300 hover:text-white"
                             >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                              />
-                            </svg>
-                          </button>
-                        </li>
+                              <svg
+                                className="w-2 h-2"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 14 14"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ) : (
+                          <li
+                            key={index}
+                            className="px-3 py-[5px] rounded-lg bg-gray-100 my-3 text-[14px]"
+                          >
+                            <span className="bg-gray-200 px-[6px] rounded-xl mr-2 text-[12px] font-light">{index + 1}</span>
+                            <span className="mr-2">{file.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFile(index)}
+                              className="text-gray-400 bg-transparent rounded-lg text-sm w-4 h-4 ms-auto inline-flex justify-center items-center hover:bg-gray-300 hover:text-white"
+                            >
+                              <svg
+                                className="w-2 h-2"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 14 14"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        )
                       ))}
                     </ul>
                   </div>

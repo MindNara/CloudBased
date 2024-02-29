@@ -55,7 +55,7 @@ router.post('/post', upload.array('image'), async (req, res) => {
             const command = new PutObjectCommand(params);
             await s3.send(command);
 
-            const imageUrl = `https://file-upload-cloud-project.s3.amazonaws.com/${encodeURIComponent(file.originalname)}`;
+            const imageUrl = `https://file-upload-cloud-project.s3.amazonaws.com/${userId}_${encodeURIComponent(file.originalname)}`;
             return {
                 url: imageUrl,
                 name: file.originalname,
@@ -73,7 +73,7 @@ router.post('/post', upload.array('image'), async (req, res) => {
             comment: 0,
             userId
         };
-        // console.log(newPost)
+        console.log(newPost)
 
         const result = await createPosts(newPost);
 
@@ -98,7 +98,16 @@ router.put('/post/:postId', uploadFileUpdate.array('image'), async (req, res) =>
     const postId = req.params.postId;
     const { title, detail, userId } = req.body;
     const images = req.files;
-    // console.log(images)
+    const dataOldImages = req.body.oldImage;
+    // console.log(dataOldImages);
+    let oldImages;
+    if (Array.isArray(dataOldImages)) {
+        oldImages = dataOldImages.map(item => JSON.parse(item));
+    } else {
+        oldImages = [dataOldImages].map(item => JSON.parse(item));
+    }
+    console.log(oldImages);
+    const updateImages = [];
 
     try {
         const imageUploadPromises = images.map(async (file) => {
@@ -112,19 +121,31 @@ router.put('/post/:postId', uploadFileUpdate.array('image'), async (req, res) =>
             const command = new PutObjectCommand(params);
             await s3.send(command);
 
-            const imageUrl = `https://file-upload-cloud-project.s3.amazonaws.com/${encodeURIComponent(file.originalname)}`;
+            const imageUrl = `https://file-upload-cloud-project.s3.amazonaws.com/${userId}_${encodeURIComponent(file.originalname)}`;
             return {
                 url: imageUrl,
                 name: file.originalname,
             };
         });
         const imageUrls = await Promise.all(imageUploadPromises);
+        console.log(imageUrls);
+
+        if (imageUrls.length > 0) {
+            imageUrls.map(item => updateImages.push(item));
+        }
+
+        if (oldImages.length > 0) {
+            oldImages.map(item => updateImages.push({
+                url: item.url.S,
+                name: item.name.S
+            }));
+        }
 
         const updatedPost = {
             id: postId,
             title: title,
             detail: detail,
-            image: imageUrls,
+            image: updateImages,
             timestamp: new Date().toISOString(),
         };
         // console.log(updatedPost);

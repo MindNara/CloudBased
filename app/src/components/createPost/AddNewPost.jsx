@@ -33,7 +33,10 @@ const AddNewPost = ({ userId }) => {
 
     selectedFiles.forEach((file) => {
       formData.append('image', file);
+      // console.log(file);
     });
+
+    // console.log(formData)
 
     try {
       const response = await axios.post('http://localhost:3000/post', formData, {

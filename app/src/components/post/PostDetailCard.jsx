@@ -94,7 +94,7 @@ const PostDetailCard = () => {
                     <img
                       key={imageIndex}
                       src={imageUrl.M.url.S}
-                      className="object-cover w-full rounded-lg cursor-pointer"
+                      className="object-cover w-full rounded-lg cursor-pointer mt-4"
                       alt={`post-${imageIndex}`}
                       onClick={() => handleImageClick(imageUrl.M.url.S, index)}
                     />
@@ -102,7 +102,7 @@ const PostDetailCard = () => {
 
                 ) : (
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    {post.images.L.slice(0, 4).map((item, i) => (
+                    {post.images.L.map((item, i) => (
                       <div key={i}>
                         <img
                           src={item.M.url.S}
