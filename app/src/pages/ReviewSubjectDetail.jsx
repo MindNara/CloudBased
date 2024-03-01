@@ -31,6 +31,8 @@ function ReviewSubjectDetail() {
       userId: user.userId
     };
 
+    // console.log("Create " + data.userId);
+
     try {
       const response = await axios.post(`http://localhost:3000/review/${reviewId}`, data, {
         headers: {
