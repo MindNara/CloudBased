@@ -160,6 +160,7 @@ function CardReview({ id }) {
                 <div className="max-w p-6 bg-white border border-gray-200 rounded-xl mt-4">
                     <div className="mt-2 flex flex-row">
                         <div className="w-[50px] h-[50px] flex-shrink-0 rounded-full bg-[#151C38]"></div>
+                        {review.user_id.S == user.userId &&
                         <Menu placement="bottom-end">
                             <MenuHandler>
                                 <div className="absolute right-20 cursor-pointer">
@@ -191,7 +192,7 @@ function CardReview({ id }) {
                                         </div></div>
                                 </MenuItem>
                             </MenuList>
-                        </Menu>
+                        </Menu>}
 
                         {/* Modal edit Review */}
                         {isModalEditOpen && (
