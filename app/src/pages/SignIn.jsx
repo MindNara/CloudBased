@@ -12,25 +12,44 @@ function SignIn() {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
-    const validateForm = () => {
-        let valid = true;
-        if (email.trim() === '') {
-            setEmailError('Email cannot be empty.');
-            valid = false;
-        } else {
-            setEmailError('');
-        }
+  // Validate email format
+const validateEmailFormat = (email) => {
+    // Regular expression for email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
 
-        if (password.trim() === '') {
-            setPasswordError('Password cannot be empty.');
-            valid = false;
-        } else {
-            setPasswordError('');
-        }
+// Validate password length
+const validatePasswordLength = (password) => {
+    return password.length >= 3;
+};
 
-        return valid;
-    };
+// Validation function
+const validateForm = () => {
+    let valid = true;
 
+    if (email.trim() === '') {
+        setEmailError('Email cannot be empty.');
+        valid = false;
+    } else if (!validateEmailFormat(email)) {
+        setEmailError('Invalid email format.');
+        valid = false;
+    } else {
+        setEmailError('');
+    }
+
+    if (password.trim() === '') {
+        setPasswordError('Password cannot be empty.');
+        valid = false;
+    } else if (!validatePasswordLength(password)) {
+        setPasswordError('Password must be at least 3 characters.');
+        valid = false;
+    } else {
+        setPasswordError('');
+    }
+
+    return valid;
+};
     const handleSubmit = async (e) => {
         e.preventDefault();
 
