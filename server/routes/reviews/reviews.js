@@ -57,6 +57,8 @@ router.post('/review/:subjectId', async (req, res) => {
             timestamp: new Date().toISOString(),
             subjectId,
             userId,
+            like: [],
+            dislike: []
         };
 
         const result = await createReviews(newReview);

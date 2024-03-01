@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { Menu, MenuHandler, MenuItem, MenuList, rating } from "@material-tailwind/react";
-import { ReviewDetail } from "../../dummyData/ReviewDetail";
 import axios from 'axios';
 import {
     Grade1,
@@ -23,6 +22,7 @@ function CardReview({ id }) {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
     const [reviewToDeleteId, setReviewToDeleteId] = useState('');
+    const [reviewToEditId, setReviewToEditId] = useState('');
 
     useEffect(() => {
         console.log(id)
@@ -58,6 +58,7 @@ function CardReview({ id }) {
     // Modal edit open
     const toggleModalEdit = (review_id) => {
         console.log("eiei" + review_id);
+        setReviewToEditId(review_id);
         const reviewToEdit = reviews.find(review => review.review_id.S === review_id);
         if (reviewToEdit) {
             // นำค่ามาแสดงผลตอน edit
@@ -80,13 +81,36 @@ function CardReview({ id }) {
         console.log("Delete Review: " + reviewToDeleteId);
         axios.delete(`http://localhost:3000/review/${reviewToDeleteId}`)
             .then(res => {
-                fetchDataReview();
+                window.location.reload();
             })
             .catch((err) => console.log(err.message))
     
         setIsModalDeleteOpen(false);
     };
 
+    const editReview = async () => {
+        const data = {
+          detail: textReview,
+          grade: grade,
+          rating: rating,
+        };
+    
+        try {
+          const response = await axios.put(`http://localhost:3000/review/${reviewToEditId}`, data, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          });
+    
+          if (response.data.success) {
+            setIsModalEditOpen(false)
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error('Error during edit review:', error);
+        }
+    };
+    
 return (
     <div className="mt-4">
         {reviews && reviews.map((review, index) => (
@@ -183,7 +207,7 @@ return (
                                                 </label>
                                                 <select
                                                     className='bg-[#F4F4F4] border border-gray-200 rounded-[10px] text-gray-500 mt-2 text-[16px] max-2xl:text-[15px] w-full py-2 px-3 leading-tight focus:outline-none focus:border-gray-500'
-                                                    name="selectedPoint" defaultValue={rating}>
+                                                    name="selectedPoint" defaultValue={rating} onChange={(e) => setRating(e.target.value)}>
                                                     <option value="1">1 point</option>
                                                     <option value="2">2 point</option>
                                                     <option value="3">3 point</option>
@@ -198,7 +222,7 @@ return (
                                                 </label>
                                                 <select
                                                     className='bg-[#F4F4F4] border border-gray-200 text-gray-500 rounded-[10px] mt-2 text-[16px] max-2xl:text-[15px] w-full py-2 px-3 leading-tight focus:outline-none focus:border-gray-500'
-                                                    name="selectedGrade" defaultValue={grade}>
+                                                    name="selectedGrade" defaultValue={grade} onChange={(e) => setGrade(e.target.value)}>
                                                     <option value="A">A</option>
                                                     <option value="B+">B+</option>
                                                     <option value="B">B</option>
@@ -212,7 +236,7 @@ return (
                                         {/* footer */}
                                         <div className="flex items-center p-4 md:p-5 rounded-b mt-[-20px] mb-2">
                                             <button
-                                                onClick={() => setIsModalEditOpen(false)}
+                                                onClick={editReview}
                                                 type="button"
                                                 className="text-white bg-gradient-to-br from-[#0D0B5F] to-[#029BE0] hover:from-[#029BE0] hover:to-[#0D0B5F] font-medium rounded-lg text-lg px-10 py-2 text-center w-full"
                                             >
