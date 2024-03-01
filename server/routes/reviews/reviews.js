@@ -1,6 +1,6 @@
 import express from 'express'
 import { readAllCourses, readCourseDetail } from './db.courses.js'
-import { readAllReviews, createReviews, deleteReviews, updateReviews } from './db.reviews.js'
+import { readAllReviews, createReviews, deleteReviews, updateReviews, updateAddLike, updateAddDisLike } from './db.reviews.js'
 import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router()
@@ -57,8 +57,8 @@ router.post('/review/:subjectId', async (req, res) => {
             timestamp: new Date().toISOString(),
             subjectId,
             userId,
-            like: [],
-            dislike: []
+            // like: "1",
+            // dislike: "1"
         };
 
         const result = await createReviews(newReview);
@@ -119,6 +119,52 @@ router.put('/review/:reviewId', async (req, res) => {
             return res.status(500).json({ success: false, message: 'Update review failed' });
         }
     } catch (error) {
+        console.error('Update review failed:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+})
+
+router.put('/review/like/:reviewId', async (req, res) => {
+    const reviewId = req.params.reviewId; // ค่า review ที่มาพร้อม params ที่ยิง url
+    const userId = req.body.userId;
+
+    try {
+        const addLike = {
+            review_id: reviewId,
+            user_id: userId
+        };
+
+        const result = await updateAddLike(addLike);
+        if (result.success) {
+            return res.json({ success: true, data: result.data });
+        } else {
+            return res.status(500).json({ success: false, message: 'Update review failed' });
+        }
+    }catch (error) {
+        console.error('Update review failed:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+})
+
+router.put('/review/dislike/:reviewId', async (req, res) => {
+    const reviewId = req.params.reviewId; // ค่า review ที่มาพร้อม params ที่ยิง url
+    const userId = req.body.userId;
+
+    try {
+        const addDisLike = {
+            review_id: reviewId,
+            user_id: userId
+        };
+
+        const result = await updateAddDisLike(addDisLike);
+        if (result.success) {
+            return res.json({ success: true, data: result.data });
+        } else {
+            return res.status(500).json({ success: false, message: 'Update review failed' });
+        }
+    }catch (error) {
         console.error('Update review failed:', error);
         return res.status(500).json({ success: false, message: 'Internal server error' });
     }
