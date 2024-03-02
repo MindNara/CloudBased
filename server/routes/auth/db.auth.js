@@ -12,7 +12,7 @@ const createUsers = async (user) => {
                 password: { S: user.password },
                 createdAt: { S: user.createdAt },
                 role: { S: user.role }
-            }
+            }  
         }
 
         await db.send(new PutItemCommand(params));
