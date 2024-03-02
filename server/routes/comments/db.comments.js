@@ -14,6 +14,50 @@ const readAllComments = async () => {
     }
 };
 
+// Get comment by ID
+const getCommentByComId = async (commentId) => {
+    try {
+        const params = {
+            TableName: 'comments',
+            Key: {
+                id: { S: commentId }
+            }
+        };
+
+        const command = new GetItemCommand(params);
+        const result = await db.send(command);
+        return { success: true, data: result.Item };
+
+    } catch (error) {
+
+    }
+}
+
+// Get comment by Post ID
+const getCommentById = async (postId) => {
+    try {
+        const params = {
+            TableName: 'comments',
+            FilterExpression: 'post_id = :post_id',
+            ExpressionAttributeValues: {
+                ':post_id': { S: postId }
+            }
+        };
+
+        const command = new ScanCommand(params);
+        const result = await db.send(command);
+
+        if (result && result.Items) {
+            return { success: true, data: result.Items };
+        } else {
+            return { success: false, data: null };
+        }
+
+    } catch (error) {
+
+    }
+}
+
 // Create Comment
 const createComments = async (comment) => {
 
@@ -30,6 +74,22 @@ const createComments = async (comment) => {
         };
 
         await db.send(new PutItemCommand(params));
+
+        const updateParams = {
+            TableName: 'posts',
+            Key: { id: { S: comment.postId } },
+            UpdateExpression: 'SET #comment = if_not_exists(#comment, :start) + :inc',
+            ExpressionAttributeNames: {
+                '#comment': 'comment',
+            },
+            ExpressionAttributeValues: {
+                ':inc': { N: '1' },
+                ':start': { N: '0' },
+            },
+        };
+
+        await db.send(new UpdateItemCommand(updateParams));
+
         console.log('Create comment successfully');
         return { success: true, data: comment };
     } catch (error) {
@@ -71,7 +131,7 @@ const updateComments = async (comment) => {
 };
 
 // Delete Comment
-const deleteComments = async (commentId) => {
+const deleteComments = async (commentId, postId) => {
     try {
         const params = {
             TableName: 'comments',
@@ -81,6 +141,22 @@ const deleteComments = async (commentId) => {
         };
 
         await db.send(new DeleteItemCommand(params));
+
+        const updateParams = {
+            TableName: 'posts',
+            Key: { id: { S: postId } },
+            UpdateExpression: 'SET #comment = if_not_exists(#comment, :start) - :dec',
+            ExpressionAttributeNames: {
+                '#comment': 'comment',
+            },
+            ExpressionAttributeValues: {
+                ':dec': { N: '1' },
+                ':start': { N: '0' },
+            },
+        };
+
+        await db.send(new UpdateItemCommand(updateParams));
+
         console.log('Delete Comment ID ' + commentId + ' successful');
 
         return { success: true, message: 'Delete Comment ID ' + commentId + ' successful' };
@@ -95,5 +171,7 @@ export {
     readAllComments,
     createComments,
     updateComments,
-    deleteComments
+    deleteComments,
+    getCommentById,
+    getCommentByComId
 }

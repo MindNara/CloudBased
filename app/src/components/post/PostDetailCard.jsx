@@ -53,12 +53,21 @@ const PostDetailCard = () => {
     setShowFullScreen(false);
   };
 
-  const handleToggleComments = (index) => {
+  const [dataComment, setDataComment] = useState([]);
+
+  const handleToggleComments = (index, postId) => {
     setShowComments((prev) => {
       const newShowComments = [...prev];
       newShowComments[index] = !newShowComments[index];
       return newShowComments;
     });
+
+    axios.get(`http://localhost:3000/comment/${postId}`)
+      .then((res) => {
+        setDataComment(res.data.data);
+        // console.log(res.data.data)
+      })
+      .catch((err) => console.log(err.message))
   };
 
 
@@ -156,7 +165,7 @@ const PostDetailCard = () => {
                   </div>
                 )}
 
-                <div className="mt-3 flex items-start">
+                <div className="mt-3 flex items-start hover:cursor-pointer">
                   <Icon
                     icon={likedPosts.includes(index) ? "bxs:heart" : "bx:heart"}
                     color={likedPosts.includes(index) ? "#d91818" : "#151c38"}
@@ -167,20 +176,24 @@ const PostDetailCard = () => {
                   <div className="ml-1 mt-[1px]">
                     <p className="text-[#151C38] text-sm mr-3">{post.like.N}</p>
                   </div>
-                  <div className="mt-[1px]">
+                  <div className="mt-[1px] hover:cursor-pointer">
                     <Icon
                       icon={showComments[index] ? "iconamoon:comment-fill" : "iconamoon:comment"}
                       color="#151c38"
                       width="20"
                       height="20"
-                      onClick={() => handleToggleComments(index)}
+                      onClick={() => handleToggleComments(index, post.id.S)}
                     />
                   </div>
                   <div className="ml-1 mt-[1px]">
                     <p className="text-[#151C38] text-sm">{post.comment.N}</p>
                   </div>
                 </div>
-
+                {showComments[index] && (
+                  <div key={index}>
+                    <CommentBox postId={post.id.S} dataComment={dataComment} />
+                  </div>
+                )}
               </div>
             </div>
           </div>
