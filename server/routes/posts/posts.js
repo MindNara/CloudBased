@@ -1,5 +1,5 @@
 import express from 'express';
-import { readAllPosts, createPosts, updatePosts, deletePosts, getPostById } from './db.posts.js';
+import { readAllPosts, createPosts, updatePosts, deletePosts, getPostById, updateAddLike } from './db.posts.js';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 import { s3 } from '../../config/s3.config.js';
@@ -69,7 +69,6 @@ router.post('/post', upload.array('image'), async (req, res) => {
             detail,
             image: imageUrls,
             timestamp: new Date().toISOString(),
-            like: 0,
             comment: 0,
             userId
         };
@@ -159,6 +158,30 @@ router.put('/post/:postId', uploadFileUpdate.array('image'), async (req, res) =>
         }
     } catch (error) {
         console.error('Update post failed:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+})
+
+// LIKE Posts
+router.put('/post/like/:postId', async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.body.userId;
+
+    try {
+        const addLike = {
+            post_id: postId,
+            user_id: userId
+        };
+
+        const result = await updateAddLike(addLike);
+        if (result.success) {
+            return res.json({ success: true, data: result.data });
+        } else {
+            return res.status(500).json({ success: false, message: 'Update review failed' });
+        }
+    } catch (error) {
+        console.error('Update review failed:', error);
         return res.status(500).json({ success: false, message: 'Internal server error' });
     }
 

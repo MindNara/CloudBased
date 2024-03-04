@@ -9,6 +9,9 @@ import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 
 const PostDetailCard = () => {
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const [likedPosts, setLikedPosts] = useState([]);
   const [showFullScreen, setShowFullScreen] = useState(false);
   const [imgForFullScreen, setImgForFullScreen] = useState("");
@@ -20,16 +23,35 @@ const PostDetailCard = () => {
     axios.get("http://localhost:3000/post")
       .then((res) => {
         setPostDetail(res.data.data);
+        const filteredData = res.data.data.filter(item => item.like?.SS.includes(user.userId));
+        if (filteredData.length > 0) {
+          const likedPostsData = filteredData.map((item) => {
+            return { post_id: item.id.S };
+          });
+          setLikedPosts(likedPostsData);
+        }
       })
       .catch((err) => console.log(err.message))
   }, [])
-  // console.log(postDetail[1].images.L.slice(0, 4))
+  // console.log(likedPosts);
 
-  const handleLikeClick = (index) => {
-    if (likedPosts.includes(index)) {
-      setLikedPosts(likedPosts.filter((i) => i !== index));
-    } else {
-      setLikedPosts([...likedPosts, index]);
+  const addlike = async (postId) => {
+    const data = {
+      userId: user.userId
+    };
+
+    try {
+      const response = await axios.put(`http://localhost:3000/post/like/${postId}`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.data.success) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error during ilke review:', error);
     }
   };
 
@@ -166,15 +188,26 @@ const PostDetailCard = () => {
                 )}
 
                 <div className="mt-3 flex items-start hover:cursor-pointer">
-                  <Icon
-                    icon={likedPosts.includes(index) ? "bxs:heart" : "bx:heart"}
-                    color={likedPosts.includes(index) ? "#d91818" : "#151c38"}
-                    width="22"
-                    height="22"
-                    onClick={() => handleLikeClick(index)}
-                  />
+                  {likedPosts.length > 1 ? (
+                    <Icon
+                      icon={likedPosts[index].post_id === post.id.S ? "bxs:heart" : "bx:heart"}
+                      color={likedPosts[index].post_id === post.id.S ? "#d91818" : "#151c38"}
+                      width="22"
+                      height="22"
+                      onClick={() => addlike(post.id.S)}
+                    />
+                  ) : (
+                    <Icon
+                      icon={likedPosts[0].post_id === post.id.S ? "bxs:heart" : "bx:heart"}
+                      color={likedPosts[0].post_id === post.id.S ? "#d91818" : "#151c38"}
+                      width="22"
+                      height="22"
+                      onClick={() => addlike(post.id.S)}
+                    />
+                  )}
+
                   <div className="ml-1 mt-[1px]">
-                    <p className="text-[#151C38] text-sm mr-3">{post.like.N}</p>
+                    <p className="text-[#151C38] text-sm mr-3">{post.like.SS.length - 1}</p>
                   </div>
                   <div className="mt-[1px] hover:cursor-pointer">
                     <Icon
