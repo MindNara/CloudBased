@@ -41,22 +41,28 @@ const CommentBox = ({ postId, dataComment }) => {
                 <div className="ml-3 p-2 bg-[#E3F3FF] relative" style={{ width: '100%', maxWidth: 'calc(100% - 40px)', borderRadius: '10px' }}>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center">
-                      <p className="text-[#151C38] text-sm font-[400]">{user.userId == "admin" ? "admin" : "user"}@{comment.user_id.S}</p>
+                      {user.role === 'admin' && user.userId === comment.user_id.S ? (
+                        <p>Admin</p>
+                      ) : (
+                        <p>User@{comment.user_id.S}</p>
+                      )}
                       <p className="text-[#A4A4A4] text-[10px] font-[350] ml-2 mt-[2px]">{format(parseISO(comment.time_stamp.S), 'dd/MM/yyyy')}, {format(parseISO(comment.time_stamp.S), 'HH:mm')} น.</p>
                     </div>
                     <div className="relative">
-                      {user.role == "admin" && (
+                      {user.role === "admin" | user.userId === comment.user_id.S ? (
                         <DropdownComment commentId={comment.id.S} postId={comment.post_id.S} />
+                      ) : (
+                        <></>
                       )}
                     </div>
                   </div>
                   <p className="text-black text-sm font-light">{comment.message.S}</p>
                 </div>
-              </div>
+              </div >
             </>
           ))
         )}
-      </div>
+      </div >
 
       <div name="post" className="relative mx-2">
         <input

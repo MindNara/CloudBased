@@ -101,7 +101,9 @@ const PostDetailCard = () => {
             <div className="flex-shrink-0 border-[1px] border-solid border-gray-300 rounded-[30px] p-6 bg-white">
               <div className="text-[#151C38] text-2xl font-[500] leading-normal flex justify-between">
                 <span>{post.title.S}</span>
-                <DropdownDots postId={post.id.S} />
+                {user.role === 'admin' && (
+                  <DropdownDots postId={post.id.S} />
+                )}
               </div>
 
               <div className="mt-5 flex items-start">
@@ -188,24 +190,24 @@ const PostDetailCard = () => {
                 )}
 
                 <div className="mt-3 flex items-start hover:cursor-pointer">
-                  {likedPosts.length > 1 ? (
+                  {likedPosts && likedPosts.length > 0 && index < likedPosts.length ? (
+                    likedPosts[index].post_id === post.id.S && (
+                      <Icon
+                        icon="bxs:heart"
+                        color="#d91818"
+                        width="22"
+                        height="22"
+                        onClick={() => addlike(post.id.S)}
+                      />
+                    )) : (
                     <Icon
-                      icon={likedPosts[index].post_id === post.id.S ? "bxs:heart" : "bx:heart"}
-                      color={likedPosts[index].post_id === post.id.S ? "#d91818" : "#151c38"}
-                      width="22"
-                      height="22"
-                      onClick={() => addlike(post.id.S)}
-                    />
-                  ) : (
-                    <Icon
-                      icon={likedPosts[0].post_id === post.id.S ? "bxs:heart" : "bx:heart"}
-                      color={likedPosts[0].post_id === post.id.S ? "#d91818" : "#151c38"}
+                      icon="bx:heart"
+                      color="#151c38"
                       width="22"
                       height="22"
                       onClick={() => addlike(post.id.S)}
                     />
                   )}
-
                   <div className="ml-1 mt-[1px]">
                     <p className="text-[#151C38] text-sm mr-3">{post.like.SS.length - 1}</p>
                   </div>
