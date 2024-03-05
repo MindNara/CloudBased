@@ -61,7 +61,7 @@ const validateForm = () => {
         }
 
         try {
-            const response = await axios.post('http://3.91.77.138:3000/register', { email, password });
+            const response = await axios.post('http://localhost:3000/register', { email, password });
             if (response.data.success) {
                 navigate('/signIn');
             }
