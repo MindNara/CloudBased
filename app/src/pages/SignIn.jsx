@@ -64,6 +64,7 @@ const validateForm = () => {
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('user', JSON.stringify(user));
                 navigate('/dashboard');
+                window.location.reload();
             } else {
                 console.error('Authentication failed:', response.data.error);
             }

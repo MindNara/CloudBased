@@ -20,6 +20,7 @@ function SideNavBar({ toggle, isOpen, setIsOpen }) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('userId');
             navigate('/');
+            window.location.reload();
         } catch (error) {
             console.error('Error during logout:', error);
         }
@@ -52,23 +53,18 @@ function SideNavBar({ toggle, isOpen, setIsOpen }) {
                         </Link>
                     </li>
                     <li className={location.pathname === '/howToRegister' && 'active'}>
-                        <Link to='/howToRegister' onClick={() => {
-                            // setIsOpen(false)
-                        }}>
+                        <Link to='/howToRegister' >
                             <img src={`https://img.icons8.com/material-rounded/${location.pathname === '/howToRegister' ? '181754' : 'FFFFFF'}/idea--v1.png`} alt="idea--v1" />
                             <span>How To Register</span>
                         </Link>
                     </li>
                 </ul>
-                <div className='profile-detail pl-10 max-2xl:pl-8 pr-8 flex justify-between items-center'>
-                    <div className='profile-content flex items-center gap-5 max-2xl:gap-4'>
-                        <div className='bg-white w-12 max-2xl:w-9 h-12 max-2xl:h-9 rounded-[50px]'></div>
-                        <span className='username text-[18px] max-2xl:text-[14px] font-light'>Username</span>
-                    </div>
-                    <Button onClick={handleLogout}>
-                        <img className='max-2xl:w-5' width='24' height='24' src="https://img.icons8.com/ios-filled/FFFFFF/logout-rounded.png" alt="logout-rounded" />
-                    </Button>
-                </div>
+                <Link className='ml-10 max-2xl:ml-8 mr-8 flex gap-4'
+                    onClick={handleLogout}
+                >
+                    <img className='' width='24' height='24' src="https://img.icons8.com/ios-filled/FFFFFF/logout-rounded.png" alt="logout-rounded" />
+                    <span className='font-light'>Logout</span>
+                </Link>
             </div>
         </div>
     )
