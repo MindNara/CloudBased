@@ -42,7 +42,7 @@ function ReviewSubjectDetail() {
 
       if (response.data.success) {
         setIsModalCreateOpen(false)
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       console.error('Error during create review:', error);

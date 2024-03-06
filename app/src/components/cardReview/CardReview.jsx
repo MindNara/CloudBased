@@ -37,9 +37,9 @@ function CardReview({ id }) {
                 console.error(error.message);
             }
         };
-        
+
         fetchDataReview();
-    }, []);
+    }, [reviews]); //โดยการเพิ่ม reviews เข้าไปใน dependencies array ของ useEffect จะทำให้ fetchDataReview() ถูกเรียกเมื่อ reviews เปลี่ยนแปลง
 
     // แสดงผลดาวตรง rating
     function DisplayRating(rate) {
@@ -84,9 +84,6 @@ function CardReview({ id }) {
         try {
             await axios.delete(`http://localhost:3000/review/${reviewToDeleteId}`);
             setIsModalDeleteOpen(false);
-            const response = await axios.get(`http://localhost:3000/review/${id}`);
-            setReviews(response.data.data);
-            console.log(response.data.data);
         } catch (error) {
             console.error(error.message);
         }
@@ -107,10 +104,7 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
-                const response = await axios.get(`http://localhost:3000/review/${id}`);
-                setReviews(response.data.data);
                 setIsModalEditOpen(false)
-                // window.location.reload();
             }
         } catch (error) {
             console.error('Error during edit review:', error);
@@ -131,8 +125,7 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
-                const response = await axios.get(`http://localhost:3000/review/${id}`);
-                setReviews(response.data.data);
+                console.log("Success like");
             }
         } catch (error) {
             console.error('Error during ilke review:', error);
@@ -153,8 +146,7 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
-                const response = await axios.get(`http://localhost:3000/review/${id}`);
-                setReviews(response.data.data);
+                console.log("Success dislike");
             }
         } catch (error) {
             console.error('Error during ilke review:', error);
