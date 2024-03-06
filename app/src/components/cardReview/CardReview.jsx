@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { Menu, MenuHandler, MenuItem, MenuList, rating } from "@material-tailwind/react";
 import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 import {
     Grade1,
     Grade2,
@@ -367,8 +368,7 @@ function CardReview({ id }) {
                         <div className="ml-4">
                             <p className="text-[#151C38] text-l font-[400]">Anonymous</p>
                             <p className="text-[#A4A4A4] text-l font-[350]">
-                                {review.time_stamp.S}
-                                {/* {review.date}, {review.time} */}
+                            {format(parseISO(review.time_stamp.S), 'dd/MM/yyyy')}, {format(parseISO(review.time_stamp.S), 'HH:mm')} น.
                             </p>
                         </div>
                     </div>
