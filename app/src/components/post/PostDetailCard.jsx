@@ -9,6 +9,9 @@ import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 
 const PostDetailCard = () => {
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const [likedPosts, setLikedPosts] = useState([]);
   const [showFullScreen, setShowFullScreen] = useState(false);
   const [imgForFullScreen, setImgForFullScreen] = useState("");
@@ -20,16 +23,35 @@ const PostDetailCard = () => {
     axios.get("http://localhost:3000/post")
       .then((res) => {
         setPostDetail(res.data.data);
+        const filteredData = res.data.data.filter(item => item.like?.SS.includes(user.userId));
+        if (filteredData.length > 0) {
+          const likedPostsData = filteredData.map((item) => {
+            return { post_id: item.id.S };
+          });
+          setLikedPosts(likedPostsData);
+        }
       })
       .catch((err) => console.log(err.message))
   }, [])
-  // console.log(postDetail[1].images.L.slice(0, 4))
+  // console.log(likedPosts);
 
-  const handleLikeClick = (index) => {
-    if (likedPosts.includes(index)) {
-      setLikedPosts(likedPosts.filter((i) => i !== index));
-    } else {
-      setLikedPosts([...likedPosts, index]);
+  const addlike = async (postId) => {
+    const data = {
+      userId: user.userId
+    };
+
+    try {
+      const response = await axios.put(`http://localhost:3000/post/like/${postId}`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.data.success) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error during ilke review:', error);
     }
   };
 
@@ -53,12 +75,21 @@ const PostDetailCard = () => {
     setShowFullScreen(false);
   };
 
-  const handleToggleComments = (index) => {
+  const [dataComment, setDataComment] = useState([]);
+
+  const handleToggleComments = (index, postId) => {
     setShowComments((prev) => {
       const newShowComments = [...prev];
       newShowComments[index] = !newShowComments[index];
       return newShowComments;
     });
+
+    axios.get(`http://localhost:3000/comment/${postId}`)
+      .then((res) => {
+        setDataComment(res.data.data);
+        // console.log(res.data.data)
+      })
+      .catch((err) => console.log(err.message))
   };
 
 
@@ -70,7 +101,9 @@ const PostDetailCard = () => {
             <div className="flex-shrink-0 border-[1px] border-solid border-gray-300 rounded-[30px] p-6 bg-white">
               <div className="text-[#151C38] text-2xl font-[500] leading-normal flex justify-between">
                 <span>{post.title.S}</span>
-                <DropdownDots postId={post.id.S} />
+                {user.role === 'admin' && (
+                  <DropdownDots postId={post.id.S} />
+                )}
               </div>
 
               <div className="mt-5 flex items-start">
@@ -156,31 +189,46 @@ const PostDetailCard = () => {
                   </div>
                 )}
 
-                <div className="mt-3 flex items-start">
-                  <Icon
-                    icon={likedPosts.includes(index) ? "bxs:heart" : "bx:heart"}
-                    color={likedPosts.includes(index) ? "#d91818" : "#151c38"}
-                    width="22"
-                    height="22"
-                    onClick={() => handleLikeClick(index)}
-                  />
+                <div className="mt-3 flex items-start hover:cursor-pointer">
+                  {likedPosts && likedPosts.length > 0 && index < likedPosts.length ? (
+                    likedPosts[index].post_id === post.id.S && (
+                      <Icon
+                        icon="bxs:heart"
+                        color="#d91818"
+                        width="22"
+                        height="22"
+                        onClick={() => addlike(post.id.S)}
+                      />
+                    )) : (
+                    <Icon
+                      icon="bx:heart"
+                      color="#151c38"
+                      width="22"
+                      height="22"
+                      onClick={() => addlike(post.id.S)}
+                    />
+                  )}
                   <div className="ml-1 mt-[1px]">
-                    <p className="text-[#151C38] text-sm mr-3">{post.like.N}</p>
+                    <p className="text-[#151C38] text-sm mr-3">{post.like.SS.length - 1}</p>
                   </div>
-                  <div className="mt-[1px]">
+                  <div className="mt-[1px] hover:cursor-pointer">
                     <Icon
                       icon={showComments[index] ? "iconamoon:comment-fill" : "iconamoon:comment"}
                       color="#151c38"
                       width="20"
                       height="20"
-                      onClick={() => handleToggleComments(index)}
+                      onClick={() => handleToggleComments(index, post.id.S)}
                     />
                   </div>
                   <div className="ml-1 mt-[1px]">
                     <p className="text-[#151C38] text-sm">{post.comment.N}</p>
                   </div>
                 </div>
-
+                {showComments[index] && (
+                  <div key={index}>
+                    <CommentBox postId={post.id.S} dataComment={dataComment} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

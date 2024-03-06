@@ -7,6 +7,7 @@ import user from './routes/users/users.js'
 import post from './routes/posts/posts.js'
 import review from './routes/reviews/reviews.js'
 import auth from './routes/auth/auth.js'
+import comment from './routes/comments/comments.js'
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ app.use(user)
 app.use(post)
 app.use(review)
 app.use(auth)
+app.use(comment)
 
 const PORT = 3000
 
