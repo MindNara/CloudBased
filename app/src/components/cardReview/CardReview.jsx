@@ -37,7 +37,7 @@ function CardReview({ id }) {
                 console.error(error.message);
             }
         };
-
+        
         fetchDataReview();
     }, []);
 
@@ -79,15 +79,17 @@ function CardReview({ id }) {
         setIsModalDeleteOpen(!isModalDeleteOpen);
     };
 
-    const deleteReview = () => {
+    const deleteReview = async () => {
         console.log("Delete Review: " + reviewToDeleteId);
-        axios.delete(`http://localhost:3000/review/${reviewToDeleteId}`)
-            .then(res => {
-                window.location.reload();
-            })
-            .catch((err) => console.log(err.message))
-
-        setIsModalDeleteOpen(false);
+        try {
+            await axios.delete(`http://localhost:3000/review/${reviewToDeleteId}`);
+            setIsModalDeleteOpen(false);
+            const response = await axios.get(`http://localhost:3000/review/${id}`);
+            setReviews(response.data.data);
+            console.log(response.data.data);
+        } catch (error) {
+            console.error(error.message);
+        }
     };
 
     const editReview = async () => {
@@ -105,8 +107,10 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
+                const response = await axios.get(`http://localhost:3000/review/${id}`);
+                setReviews(response.data.data);
                 setIsModalEditOpen(false)
-                window.location.reload();
+                // window.location.reload();
             }
         } catch (error) {
             console.error('Error during edit review:', error);
@@ -127,7 +131,8 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
-                window.location.reload();
+                const response = await axios.get(`http://localhost:3000/review/${id}`);
+                setReviews(response.data.data);
             }
         } catch (error) {
             console.error('Error during ilke review:', error);
@@ -148,7 +153,8 @@ function CardReview({ id }) {
             });
 
             if (response.data.success) {
-                window.location.reload();
+                const response = await axios.get(`http://localhost:3000/review/${id}`);
+                setReviews(response.data.data);
             }
         } catch (error) {
             console.error('Error during ilke review:', error);
