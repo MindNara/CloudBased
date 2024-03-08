@@ -74,17 +74,15 @@ const updatePosts = async (post) => {
             Key: {
                 id: { S: post.id },
             },
-            UpdateExpression: 'SET #title = :title, #detail = :detail, #timestamp = :timestamp, #images = :images',
+            UpdateExpression: 'SET #title = :title, #detail = :detail, #images = :images',
             ExpressionAttributeNames: {
                 '#title': 'title',
                 '#detail': 'detail',
-                '#timestamp': 'timestamp',
                 '#images': 'images',
             },
             ExpressionAttributeValues: {
                 ':title': { S: post.title },
                 ':detail': { S: post.detail },
-                ':timestamp': { S: post.timestamp },
                 ':images': { L: post.image.map(img => ({ M: { url: { S: img.url }, name: { S: img.name } } })) },
             },
             ReturnValues: 'UPDATED_NEW',

@@ -33,7 +33,8 @@ const DropdownDots = ({ postId }) => {
     console.log("Delete Post: " + id);
     axios.delete(`http://localhost:3000/post/${id}`)
       .then(res => {
-        window.location.reload();
+        console.log("Delete Post ID: " + id);
+        // window.location.reload();
       })
       .catch((err) => console.log(err.message))
   }

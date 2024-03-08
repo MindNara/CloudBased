@@ -100,12 +100,12 @@ router.put('/post/:postId', uploadFileUpdate.array('image'), async (req, res) =>
     const dataOldImages = req.body.oldImage;
     // console.log(dataOldImages);
     let oldImages;
-    if (Array.isArray(dataOldImages)) {
+    if (Array.isArray(dataOldImages) && dataOldImages) {
         oldImages = dataOldImages.map(item => JSON.parse(item));
-    } else {
+    } else if (dataOldImages) {
         oldImages = [dataOldImages].map(item => JSON.parse(item));
     }
-    console.log(oldImages);
+    // console.log(oldImages);
     const updateImages = [];
 
     try {
@@ -127,13 +127,13 @@ router.put('/post/:postId', uploadFileUpdate.array('image'), async (req, res) =>
             };
         });
         const imageUrls = await Promise.all(imageUploadPromises);
-        console.log(imageUrls);
+        // console.log(imageUrls);
 
-        if (imageUrls.length > 0) {
+        if (imageUrls && imageUrls.length > 0) {
             imageUrls.map(item => updateImages.push(item));
         }
 
-        if (oldImages.length > 0) {
+        if (oldImages && oldImages.length > 0) {
             oldImages.map(item => updateImages.push({
                 url: item.url.S,
                 name: item.name.S

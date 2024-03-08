@@ -47,7 +47,7 @@ const AddNewPost = ({ userId }) => {
 
       if (response.data.success) {
         setModalVisible(false);
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       console.error('Error during signup:', error.response.data);
