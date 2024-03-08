@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import PopUpEdit from "./PopUpEdit";
 import axios from 'axios';
+import { baseURL } from "../../../baseURL";
 
 const DropdownDots = ({ postId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -31,7 +32,7 @@ const DropdownDots = ({ postId }) => {
 
   function deletePost(id) {
     console.log("Delete Post: " + id);
-    axios.delete(`http://localhost:3000/post/${id}`)
+    axios.delete(`${baseURL}post/${id}`)
       .then(res => {
         console.log("Delete Post ID: " + id);
         // window.location.reload();

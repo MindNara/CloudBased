@@ -7,6 +7,7 @@ import CommentBox from "./CommentBox";
 import CommentInput from "./CommentInput";
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
+import { baseURL } from "../../../baseURL";
 
 const PostDetailCard = () => {
 
@@ -21,7 +22,7 @@ const PostDetailCard = () => {
   const [checkPostId, setCheckPostId] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/post")
+    axios.get(`${baseURL}post`)
       .then((res) => {
 
         const sortedPostDetail = res.data.data.sort((a, b) => {
@@ -50,7 +51,7 @@ const PostDetailCard = () => {
     };
 
     try {
-      const response = await axios.put(`http://localhost:3000/post/like/${postId}`, data, {
+      const response = await axios.put(`${baseURL}post/like/${postId}`, data, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -94,13 +95,21 @@ const PostDetailCard = () => {
       return newShowComments;
     });
 
-    axios.get(`http://localhost:3000/comment/${postId}`)
+    getComments(postId);
+  };
+
+  const getComments = (postId) => {
+    axios.get(`${baseURL}comment/${postId}`)
       .then((res) => {
         setDataComment(res.data.data);
         // console.log(res.data.data)
       })
-      .catch((err) => console.log(err.message))
+      .catch((err) => console.log(err.message));
   };
+
+  // useEffect(() => {
+    
+  // }, [dataComment]);
 
 
   return (

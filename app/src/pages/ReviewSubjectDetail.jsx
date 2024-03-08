@@ -3,6 +3,7 @@ import CardDetailSubject from '../components/cardReview/CardDetailSubject'
 import CardReview from '../components/cardReview/CardReview'
 import { Outlet, useLocation, Link, useParams } from 'react-router-dom'
 import axios from 'axios';
+import { baseURL } from '../../baseURL';
 
 function ReviewSubjectDetail() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -34,7 +35,7 @@ function ReviewSubjectDetail() {
     // console.log("Create " + data.userId);
 
     try {
-      const response = await axios.post(`http://localhost:3000/review/${reviewId}`, data, {
+      const response = await axios.post(`${baseURL}review/${reviewId}`, data, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -84,7 +85,7 @@ function ReviewSubjectDetail() {
                     </button>
                   </div>
                   <CardReview id={reviewId} />
-                  
+
                   {/* Modal create Review */}
                   {isModalCreateOpen && (
                     <div

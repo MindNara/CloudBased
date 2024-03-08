@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import axios from 'axios';
+import { baseURL } from "../../../baseURL";
 
 const PopUpComment = ({ commentId, handleClose, togglePopup, handlePost }) => {
 
   const [comment, setComment] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/commentById/${commentId}`)
+    axios.get(`${baseURL}commentById/${commentId}`)
       .then((res) => {
         const comment = res.data.data;
         setComment(comment.message.S);
@@ -19,12 +20,12 @@ const PopUpComment = ({ commentId, handleClose, togglePopup, handlePost }) => {
   const handleUpdateComment = async () => {
 
     try {
-      const response = await axios.put(`http://localhost:3000/comment/${commentId}`, {
+      const response = await axios.put(`${baseURL}comment/${commentId}`, {
         message: comment,
       });
 
       if (response.data.success) {
-        window.location.reload();
+        // window.location.reload();
         setComment('');
       }
     } catch (error) {

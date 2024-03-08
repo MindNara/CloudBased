@@ -12,6 +12,7 @@ import {
     Grade6,
     Grade7
 } from '../../assets/picGrade/index';
+import { baseURL } from "../../../baseURL";
 
 function CardReview({ id }) {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -30,7 +31,7 @@ function CardReview({ id }) {
         console.log(id)
         const fetchDataReview = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/review/${id}`);
+                const response = await axios.get(`${baseURL}review/${id}`);
                 setReviews(response.data.data);
                 console.log(response.data.data);
             } catch (error) {
@@ -82,7 +83,7 @@ function CardReview({ id }) {
     const deleteReview = async () => {
         console.log("Delete Review: " + reviewToDeleteId);
         try {
-            await axios.delete(`http://localhost:3000/review/${reviewToDeleteId}`);
+            await axios.delete(`${baseURL}review/${reviewToDeleteId}`);
             setIsModalDeleteOpen(false);
         } catch (error) {
             console.error(error.message);
@@ -97,7 +98,7 @@ function CardReview({ id }) {
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/review/${reviewToEditId}`, data, {
+            const response = await axios.put(`${baseURL}review/${reviewToEditId}`, data, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -118,7 +119,7 @@ function CardReview({ id }) {
         // console.log("eiei " + data.userId);
 
         try {
-            const response = await axios.put(`http://localhost:3000/review/like/${reviewId}`, data, {
+            const response = await axios.put(`${baseURL}review/like/${reviewId}`, data, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -139,7 +140,7 @@ function CardReview({ id }) {
         // console.log("eiei " + data.userId);
 
         try {
-            const response = await axios.put(`http://localhost:3000/review/dislike/${reviewId}`, data, {
+            const response = await axios.put(`${baseURL}review/dislike/${reviewId}`, data, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -160,38 +161,38 @@ function CardReview({ id }) {
                     <div className="mt-2 flex flex-row">
                         <div className="w-[50px] h-[50px] flex-shrink-0 rounded-full bg-[#151C38]"></div>
                         {review.user_id.S == user.userId &&
-                        <Menu placement="bottom-end">
-                            <MenuHandler>
-                                <div className="absolute right-20 cursor-pointer">
-                                    <Icon icon="prime:ellipsis-h" color="#151c38" width="19" height="19" />
-                                </div>
-                            </MenuHandler>
-                            <MenuList className="bg-[#ffffff] border border-gray-200 shadow-md rounded-xl text-sm">
-                                <MenuItem className="hover:bg-gray-200 cursor-pointer rounded-xl" onClick={() => toggleModalEdit(review.review_id.S)} >
-                                    <div className="flex item-center py-3">
-                                        <Icon
-                                            icon="fluent:edit-24-regular"
-                                            color="#727272"
-                                            width="15"
-                                            height="15"
-                                        />
-                                        <span className="pl-3 text-gray-700">Edit Review</span>
+                            <Menu placement="bottom-end">
+                                <MenuHandler>
+                                    <div className="absolute right-20 cursor-pointer">
+                                        <Icon icon="prime:ellipsis-h" color="#151c38" width="19" height="19" />
                                     </div>
-                                </MenuItem>
-                                <MenuItem className="hover:bg-gray-200 cursor-pointer rounded-xl" onClick={() => toggleModalDelete(review.review_id.S)}>
-                                    <div className="hover:bg-gray-200 cursor-pointer">
+                                </MenuHandler>
+                                <MenuList className="bg-[#ffffff] border border-gray-200 shadow-md rounded-xl text-sm">
+                                    <MenuItem className="hover:bg-gray-200 cursor-pointer rounded-xl" onClick={() => toggleModalEdit(review.review_id.S)} >
                                         <div className="flex item-center py-3">
                                             <Icon
-                                                icon="mingcute:delete-3-line"
+                                                icon="fluent:edit-24-regular"
                                                 color="#727272"
                                                 width="15"
                                                 height="15"
                                             />
-                                            <p className="pl-3 text-gray-700">Delete Review</p>
-                                        </div></div>
-                                </MenuItem>
-                            </MenuList>
-                        </Menu>}
+                                            <span className="pl-3 text-gray-700">Edit Review</span>
+                                        </div>
+                                    </MenuItem>
+                                    <MenuItem className="hover:bg-gray-200 cursor-pointer rounded-xl" onClick={() => toggleModalDelete(review.review_id.S)}>
+                                        <div className="hover:bg-gray-200 cursor-pointer">
+                                            <div className="flex item-center py-3">
+                                                <Icon
+                                                    icon="mingcute:delete-3-line"
+                                                    color="#727272"
+                                                    width="15"
+                                                    height="15"
+                                                />
+                                                <p className="pl-3 text-gray-700">Delete Review</p>
+                                            </div></div>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>}
 
                         {/* Modal edit Review */}
                         {isModalEditOpen && (
@@ -366,7 +367,7 @@ function CardReview({ id }) {
                         <div className="ml-4">
                             <p className="text-[#151C38] text-l font-[400]">Anonymous</p>
                             <p className="text-[#A4A4A4] text-l font-[350]">
-                            {format(parseISO(review.time_stamp.S), 'dd/MM/yyyy')}, {format(parseISO(review.time_stamp.S), 'HH:mm')} น.
+                                {format(parseISO(review.time_stamp.S), 'dd/MM/yyyy')}, {format(parseISO(review.time_stamp.S), 'HH:mm')} น.
                             </p>
                         </div>
                     </div>
