@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import axios from 'axios';
 import { baseURL } from "../../../baseURL";
@@ -8,6 +8,15 @@ const AddNewPost = ({ userId }) => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [titleError, setTitleError] = useState('');
+  const [detailError, setDetailError] = useState('');
+
+  useEffect(() => {
+    if (!modalVisible) {
+      setTitleError('');
+      setDetailError('');
+    }
+  }, [modalVisible]);
 
   const handleChange = (e) => {
     const files = e.target.files;
@@ -26,7 +35,21 @@ const AddNewPost = ({ userId }) => {
   };
 
   const handlePost = async () => {
+    if (title.trim() === '') {
+      setTitleError('Please enter a title');
+      return;
+    } else {
+      setTitleError('');
+    }
 
+    if (detail.trim() === '') {
+      setDetailError('Please enter a message');
+      return;
+    } else {
+      setDetailError('');
+    }
+
+    
     const formData = new FormData();
     formData.append('title', title);
     formData.append('detail', detail);
@@ -34,10 +57,7 @@ const AddNewPost = ({ userId }) => {
 
     selectedFiles.forEach((file) => {
       formData.append('image', file);
-      // console.log(file);
     });
-
-    // console.log(formData)
 
     try {
       const response = await axios.post(`${baseURL}post`, formData, {
@@ -48,7 +68,6 @@ const AddNewPost = ({ userId }) => {
 
       if (response.data.success) {
         setModalVisible(false);
-        // window.location.reload();
       }
     } catch (error) {
       console.error('Error during signup:', error.response.data);
@@ -134,16 +153,18 @@ const AddNewPost = ({ userId }) => {
                   <input
                     type="text"
                     placeholder="New Title"
-                    className="border-none outline-none p-2  w-full focus:ring-0 text-xl font-semibold"
+                    className={`border-none outline-none p-2  w-full focus:ring-0 text-xl font-semibold ${titleError && 'border-red-500'}`}
                     onChange={(e) => setTitle(e.target.value)}
                   />
+                  {titleError && <p className="text-red-500 ml-2 text-sm ">{titleError}</p>}
                   <textarea
                     rows="4"
                     cols="50"
                     placeholder="Text to something ..."
-                    className="border-none outline-none p-2 mb-4 w-full resize-none focus:ring-0 text-base font-normal"
+                    className={`border-none outline-none p-2 mb-4 w-full resize-none focus:ring-0 text-base font-normal ${detailError && 'border-red-500'}`}
                     onChange={(e) => setDetail(e.target.value)}
                   />
+                  {detailError && <p className="text-red-500 ml-2 text-sm ">{detailError}</p>}
                 </div>
 
                 <div className="flex items-center p-4 md:p-5 rounded-b mt-[-20px]">
@@ -208,6 +229,7 @@ const AddNewPost = ({ userId }) => {
                     onClick={handlePost}
                     type="button"
                     className="text-white bg-gradient-to-br from-[#0D0B5F] to-[#029BE0] hover:from-[#029BE0] hover:to-[#0D0B5F] font-medium rounded-lg text-[15px] px-10 py-2 text-center w-full"
+                    disabled={title.trim() === '' || detail.trim() === ''}
                   >
                     Post
                   </button>
